@@ -18,9 +18,26 @@
   width: 30px;
 }
 
-.App-header {
+.app-header {
   background-color: #106cc8;
   color: white;
+}
+.custom-input {
+  background: transparent;
+  border-width: 0 0 1px 0;
+  border-radius: 0;
+  color: #fff;
+}
+.custom-input::placeholder {
+  color: #fff;
+  font-weight: bold;
+}
+.custom-input:focus {
+  color: #fff;
+  background-color: transparent;
+  border-color: none;
+  outline: 0;
+  box-shadow: none;
 }
 
 .App-link {

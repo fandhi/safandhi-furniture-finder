@@ -2,7 +2,7 @@ import './App.css';
 
 import axios from 'axios';
 import React, { Component } from 'react';
-import { Card, Col, Container, Form, Row, Spinner } from 'react-bootstrap';
+import { Card, Col, Container, DropdownButton, Form, Row, Spinner } from 'react-bootstrap';
 
 const API = "http://www.mocky.io/v2/5c9105cb330000112b649af8"
 
@@ -12,20 +12,19 @@ class App extends Component {
     this.state = {
       dataFurniture: [],
       furnitureStyles: [],
+      deliveryTime: ["1 week", "2 week", "1 Month", "more"],
       isLoading: false,
       filter: "",
-      fltr: "",
       search: ""
     }
   }
 
   componentDidMount() {
-    this.sdfsdf();
+    this.fetchData();
   };
 
-  sdfsdf() {
+  fetchData() {
     this.setState({ isLoading: true });
-
     axios.get(API)
       .then(result => this.setState({
         furnitureStyles: result.data.furniture_styles,
@@ -51,20 +50,14 @@ class App extends Component {
   }
 
   renderFurniture = furniture => {
-    const { search } = this.state;
-
     return (
       <Col md={6} sm={6} className="mb-4" key={furniture.name}>
         <Card>
           <Card.Body>
-            <Card.Title title={furniture.name}>
-              {furniture.name.substring(0, 15)}
-              {furniture.name.length > 15 && "..."}
-            </Card.Title>
+            <Card.Title title={furniture.name}>{furniture.name}</Card.Title>
             <Card.Text className="card-price text-warning position-absolute ">Rp {furniture.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}</Card.Text>
             <Card.Text>{furniture.description}</Card.Text>
-            <Card.Text>{furniture.furniture_style ? "Classic" : "true"}</Card.Text>
-            <Card.Text className="text-primary">{(furniture.index ? ' , ' : '') + furniture.furniture_style}</Card.Text>
+            <Card.Text className="text-primary">{(furniture.furniture_style.index ? ', ' : '') + furniture.furniture_style}</Card.Text>
             <Card.Link href="#" className="card-delivery">{furniture.delivery_time} Days</Card.Link>
           </Card.Body>
         </Card>
@@ -73,12 +66,12 @@ class App extends Component {
   };
 
   render() {
-    const { dataFurniture, furnitureStyles, fltr, search, isLoading } = this.state;
-    const fltrData = dataFurniture.filter(item => {
+    const { dataFurniture, furnitureStyles, deliveryTime, search, isLoading } = this.state;
+    const filterData = dataFurniture.filter(item => {
       return item.name.toLowerCase().indexOf(search.toLowerCase()) !== -1;
     })
     // console.log('dataFurniture ', dataFurniture)
-    // console.log('fltrData ', fltrData)
+    // console.log('filterData ', filterData)
 
     if (isLoading) {
       return <div className="align">
@@ -88,51 +81,55 @@ class App extends Component {
     return (
       <div className="App">
         <Container className="content">
-          <header className="bg-info p-3">
+          <header className="app-header p-3">
             <Form>
-              <Form.Group controlId="exampleForm.ControlInput1">
-                <Form.Control type="text" onChange={this.handleChange} placeholder="Search Furniture" />
-              </Form.Group>
               <Row>
                 <Col>
                   <Form.Group controlId="exampleForm.ControlInput1">
-                    <Form.Control type="email" placeholder="..." />
+                    <Form.Control
+                      type="text"
+                      onChange={this.handleChange}
+                      className="custom-input"
+                      placeholder="Search Furniture" />
                   </Form.Group>
-                  {/* {furnitureStyles.map((styles, index) =>
-                    <Form.Check inline label={styles} type="checkbox" id={styles} />
-                  )} */}
-                  {/* <Form.Check inline label="Classic" type="checkbox" id="Classic" onClick={(() => dddd("Classic"))} /> */}
+                </Col>
+                <Col></Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group controlId="exampleForm.ControlInput1">
+                    <DropdownButton id="dropdown-basic-button1" title="Furniture Styles" role="menuitemcheckbox" block>
+                      {furnitureStyles.map((styles, index) =>
+                        <Form.Check
+                          key={index}
+                          className="m-2 position-relative"
+                          label={styles}
+                          type="checkbox"
+                          id={styles} />
+                      )}
+                    </DropdownButton>
+                  </Form.Group>
                 </Col>
 
                 <Col>
                   <Form.Group controlId="exampleForm.ControlSelect1">
-                    <Form.Control as="select">
-                      {dataFurniture.map((item, index) =>
-                        <option key={index}>{item.delivery_time}</option>
+                    <DropdownButton id="dropdown-basic-button2" title="Delivery Time" role="menuitemcheckbox" block>
+                      {deliveryTime.map((item, index) =>
+                        <Form.Check
+                          className="m-2 position-relative"
+                          key={index}
+                          type="checkbox"
+                          id={index}
+                          label={item} />
                       )}
-                    </Form.Control>
+                    </DropdownButton>
                   </Form.Group>
                 </Col>
               </Row>
             </Form>
           </header>
-          <Row className="row p-2">
-            {/* {fltrData.map((item, index) =>
-              <Col md={6} sm={6} className="mb-4" key={item.name}>
-                <Card className="shadow-sm">
-                  <Card.Body>
-                    <Card.Title>{item.name}</Card.Title>
-                    <Card.Text className="card-price text-warning position-absolute ">Rp {item.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}</Card.Text>
-                    <Card.Text>{item.description}</Card.Text>
-                    <Card.Text>{item.furniture_style ? "Classic" : "true"}</Card.Text>
-                    <Card.Text className="text-primary">{(item.index ? ' , ' : '') + item.furniture_style}</Card.Text>
-                    <Card.Link href="#" className="card-delivery">{item.delivery_time} Days</Card.Link>
-                  </Card.Body>
-                </Card>
-              </Col>
-            )} */}
-
-            {fltrData.map(furniture => {
+          <Row className="pt-2">
+            {filterData.map(furniture => {
               return this.renderFurniture(furniture);
             })}
           </Row>

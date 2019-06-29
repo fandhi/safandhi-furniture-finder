@@ -51,12 +51,12 @@ class App extends Component {
 
   renderFurniture = furniture => {
     return (
-      <Col md={6} sm={6} className="mb-4" key={furniture.name}>
+      <Col md={6} lg={4} className="mb-4" key={furniture.name}>
         <Card>
           <Card.Body>
-            <Card.Title title={furniture.name}>{furniture.name}</Card.Title>
-            <Card.Text className="card-price text-warning position-absolute ">Rp {furniture.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}</Card.Text>
-            <Card.Text>{furniture.description}</Card.Text>
+            <Card.Title title={furniture.name}>{`${furniture.name.substring(0, 18)}`}</Card.Title>
+            <Card.Text className="card-price text-warning position-absolute ">IDR {furniture.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}</Card.Text>
+            <Card.Text>{`${furniture.description.substring(0, 114)}...`}</Card.Text>
             <Card.Text className="text-primary">{(furniture.furniture_style.index ? ', ' : '') + furniture.furniture_style}</Card.Text>
             <Card.Link href="#" className="card-delivery">{furniture.delivery_time} Days</Card.Link>
           </Card.Body>
